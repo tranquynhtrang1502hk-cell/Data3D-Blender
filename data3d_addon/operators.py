@@ -307,9 +307,8 @@ def build_line_chart(scn, data, col, font):
     return last_frame
 
 
-# =====================================================================
+
 # 3. CÁC OPERATOR (NÚT BẤM)
-# =====================================================================
 
 class DATA3D_OT_create(bpy.types.Operator):
     """Đọc file CSV và dựng biểu đồ 3D"""
