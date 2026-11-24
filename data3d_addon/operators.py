@@ -103,3 +103,49 @@ def add_label(text, location, size, col, font=None):
     move_to_col(t, col)
     return t
 
+
+def read_csv(path):
+    """
+    Đọc file CSV. Trả về (danh_sách, None) nếu đúng,
+    hoặc (None, "thông báo lỗi") nếu sai.
+    Mỗi phần tử danh sách là (tên, giá_trị, emoji).
+    """
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            lines = f.read().splitlines()
+    except OSError as e:
+        return None, f"Không mở được file: {e}"
+    except UnicodeDecodeError:
+        return None, "File không phải UTF-8. Hãy lưu lại với mã hóa UTF-8"
+
+    if not lines:
+        return None, "File rỗng"
+
+    # Excel tiếng Việt hay dùng dấu ; làm dấu phân cách -> tự nhận biết
+    delim = ";" if lines[0].count(";") > lines[0].count(",") else ","
+    reader = csv.DictReader(lines, delimiter=delim)
+    if not reader.fieldnames:
+        return None, "Không đọc được dòng tiêu đề"
+
+    # Chuẩn hóa tên cột: bỏ khoảng trắng, viết thường
+    reader.fieldnames = [h.strip().lower() for h in reader.fieldnames]
+    if "name" not in reader.fieldnames or "value" not in reader.fieldnames:
+        return None, "File CSV cần có cột 'name' và 'value'"
+
+    data = []
+    for n, row in enumerate(reader, start=2):   # dòng 1 là tiêu đề
+        name = (row.get("name") or "").strip()
+        raw = (row.get("value") or "").strip().replace(",", ".")
+        if not name and not raw:
+            continue                             # bỏ qua dòng trống
+        try:
+            value = float(raw)
+        except ValueError:
+            return None, f"Dòng {n}: '{raw}' không phải là số"
+        emoji = (row.get("emoji") or "").strip()
+        data.append((name or f"Muc {n - 1}", value, emoji))
+
+    if not data:
+        return None, "File không có dòng dữ liệu nào"
+    return data, None
+
