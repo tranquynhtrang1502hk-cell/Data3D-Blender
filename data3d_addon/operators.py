@@ -363,3 +363,16 @@ class DATA3D_OT_create(bpy.types.Operator):
         self.report({'INFO'}, f"Đã tạo biểu đồ từ {len(data)} dòng dữ liệu")
         return {'FINISHED'}
 
+
+class DATA3D_OT_clear(bpy.types.Operator):
+    """Xóa biểu đồ do Data3D tạo ra"""
+    bl_idname = "data3d.clear_chart"
+    bl_label = "Xóa biểu đồ"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        clear_chart()
+        self.report({'INFO'}, "Đã xóa biểu đồ")
+        return {'FINISHED'}
+
+
