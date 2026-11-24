@@ -197,3 +197,23 @@ def key_pop(obj, f0, f1):
     obj.keyframe_insert("scale", frame=f0)
     obj.scale = final
     obj.keyframe_insert("scale", frame=f1)
+
+
+
+# =====================================================================
+# 2. HÀM DỰNG BIỂU ĐỒ
+# =====================================================================
+
+def build_bar_chart(scn, data, col, font):
+    """Dựng biểu đồ cột. Trả về khung hình cuối của hoạt họa."""
+    gap = scn.data3d_spacing
+    width = scn.data3d_width
+    hscale = scn.data3d_height
+    values = [d[1] for d in data]
+    vmin, vmax = min(values), max(values)
+    last_frame = 1
+
+
+    return last_frame
+
+
