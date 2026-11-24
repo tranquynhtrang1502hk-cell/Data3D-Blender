@@ -168,3 +168,32 @@ def frame_view(context):
         pass  # Zoom không được cũng không sao, người dùng bấm Home
 
 
+# ---- Hàm tạo hoạt họa (keyframe) ----
+
+def key_bar_grow(bar, h, f0, f1):
+    """Cột mọc từ đáy: animate cả chiều cao và vị trí z (vì tâm ở giữa khối)."""
+    bar.scale.z = 0.001
+    bar.location.z = 0.0005
+    bar.keyframe_insert("scale", index=2, frame=f0)
+    bar.keyframe_insert("location", index=2, frame=f0)
+    bar.scale.z = h
+    bar.location.z = h / 2
+    bar.keyframe_insert("scale", index=2, frame=f1)
+    bar.keyframe_insert("location", index=2, frame=f1)
+
+
+def key_rise(obj, z_end, f0, f1):
+    """Nhãn trượt từ dưới lên vị trí cuối."""
+    obj.location.z = 0
+    obj.keyframe_insert("location", index=2, frame=f0)
+    obj.location.z = z_end
+    obj.keyframe_insert("location", index=2, frame=f1)
+
+
+def key_pop(obj, f0, f1):
+    """Đối tượng phóng to từ gần 0 lên kích thước hiện tại."""
+    final = obj.scale.copy()
+    obj.scale = (0.001, 0.001, 0.001)
+    obj.keyframe_insert("scale", frame=f0)
+    obj.scale = final
+    obj.keyframe_insert("scale", frame=f1)
