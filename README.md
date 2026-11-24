@@ -453,3 +453,12 @@ Add-on dùng **keyframe** của Blender:
 | Chỉnh ô nhập | `properties.py` | Giá trị được lưu vào Scene (lưu cùng file `.blend`) |
 | Bấm nút | `operators.py` | Hàm `execute` đọc các giá trị đã lưu và chạy luồng xử lý ở trên |
 | Tắt add-on | `__init__.py` | Gọi `unregister()` theo thứ tự ngược lại |
+
+
+## Hạn chế 
+* Hạn chế đã biết
+* Hiện chưa hỗ trợ giá trị âm.
+* Chưa có biểu đồ tròn.
+* Font mặc định của Blender có thể không hiển thị emoji hoặc một số ký tự tiếng Việt.
+* Cách đặt camera khi xuất ảnh là ước lượng tự động, với dữ liệu rất dài biểu đồ có thể bị cắt hoặc quá nhỏ.
+* Biểu đồ nên có tối đa khoảng 50 dòng dữ liệu.
