@@ -5,18 +5,19 @@ Data3D là tiện ích mở rộng (add-on) cho phần mềm đồ họa 3D mã 
 * Dự án thuộc bài tập lớn môn Công nghệ mã nguồn mở. 
 * Sinh viên: Trần Quỳnh Trang – MSSV 2551050225 – Lớp DH25IT03. 
 
-## Mục lục 
-1 Tính năng.
-2 Yêu cầu.
-3 Cài đặt.
-4 Cách sử dụng.
-5 Định dạng file CSV.
-6 Cấu trúc mã nguồn.
-7 Cách hoạt động.
-8 Hạn chế đã biết.
-9 Hướng phát triển.
-10 Đóng góp.
-11 Giấy phép.
+## Mục lục
+
+1. [Tính năng](#tính-năng)
+2. [Yêu cầu](#yêu-cầu)
+3. [Cài đặt](#cài-đặt)
+4. [Cách sử dụng](#cách-sử-dụng)
+5. [Định dạng file CSV](#định-dạng-file-csv)
+6. [Cấu trúc mã nguồn](#cấu-trúc-mã-nguồn)
+7. [Cách hoạt động](#cách-hoạt-động)
+8. [Hạn chế đã biết](#hạn-chế-đã-biết)
+9. [Hướng phát triển](#hướng-phát-triển)
+10. [Đóng góp](#đóng-góp)
+11. [Giấy phép](#giấy-phép)
 
 
 ## Tính năng
