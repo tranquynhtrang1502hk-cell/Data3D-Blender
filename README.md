@@ -455,10 +455,48 @@ Add-on dùng **keyframe** của Blender:
 | Tắt add-on | `__init__.py` | Gọi `unregister()` theo thứ tự ngược lại |
 
 
-## Hạn chế 
+## Hạn chế đã biết
 * Hạn chế đã biết
 * Hiện chưa hỗ trợ giá trị âm.
 * Chưa có biểu đồ tròn.
 * Font mặc định của Blender có thể không hiển thị emoji hoặc một số ký tự tiếng Việt.
 * Cách đặt camera khi xuất ảnh là ước lượng tự động, với dữ liệu rất dài biểu đồ có thể bị cắt hoặc quá nhỏ.
 * Biểu đồ nên có tối đa khoảng 50 dòng dữ liệu.
+
+
+## Hướng phát triển
+
+### Ngắn hạn: cải thiện add-on hiện tại
+
+- **Hỗ trợ giá trị âm:** cột âm hướng xuống dưới mặt phẳng gốc. Hiện add-on đang báo lỗi khi gặp số âm.
+- **Biểu đồ tròn:** chia múi theo tỉ lệ giá trị, có nhãn phần trăm. Hiện mới có biểu đồ cột và biểu đồ đường.
+- **Chọn bảng màu:** cho phép đổi dải màu hoặc dùng một màu duy nhất, thay vì cố định xanh dương, xanh lá, đỏ.
+- **Font hỗ trợ tiếng Việt:** đóng gói sẵn một font mã nguồn mở có dấu để người dùng không phải tự chọn font.
+- **Giữ camera khi xuất ảnh:** cho phép dùng camera hiện có, vì hiện nút Xuất ảnh sẽ di chuyển camera của cảnh.
+
+### Trung hạn: mở rộng tính năng
+
+- **Trục và lưới tọa độ:** vẽ trục số, đường lưới và tiêu đề biểu đồ.
+- **Nhiều chuỗi dữ liệu:** đọc nhiều cột giá trị để vẽ nhóm cột hoặc nhiều đường so sánh.
+- **Xuất video:** render hoạt họa ra file video, không chỉ ảnh tĩnh.
+- **Nhiều kiểu hoạt họa:** thêm hiệu ứng trượt vào, xoay, nảy.
+- **Vật liệu và ánh sáng:** thêm vật liệu bóng, trong suốt và ánh sáng đẹp sẵn cho ảnh xuất ra.
+- **Xử lý dữ liệu lớn:** gom nhóm hoặc lấy mẫu khi dữ liệu có hàng trăm dòng.
+
+### Dài hạn: hoàn thiện sản phẩm
+
+- **Đóng gói theo chuẩn extension của Blender:** cài đặt dễ hơn, thuận tiện cập nhật phiên bản.
+- **Kiểm thử tự động:** viết test cho phần đọc và kiểm tra CSV, chạy bằng GitHub Actions.
+- **Nguồn dữ liệu khác:** đọc thêm file Excel (`.xlsx`) hoặc JSON.
+- **Giao diện đa ngôn ngữ:** thêm bản dịch tiếng Anh cho panel và thông báo lỗi.
+- **Tài liệu và ví dụ:** bổ sung ảnh minh họa, video hướng dẫn và bộ dữ liệu mẫu từ nguồn dữ liệu mở.
+
+### Việc khởi đầu cho người muốn đóng góp
+
+- Thêm một bộ dữ liệu mẫu mới vào thư mục `sample_data/`.
+- Dịch giao diện và thông báo sang ngôn ngữ khác.
+- Cải thiện thông báo lỗi.
+- Viết thêm tài liệu và chụp ảnh minh họa.
+
+Xem mục [Đóng góp](#đóng-góp) để biết quy trình gửi Pull Request.
+
