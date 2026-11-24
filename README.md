@@ -500,3 +500,78 @@ Add-on dùng **keyframe** của Blender:
 
 Xem mục [Đóng góp](#đóng-góp) để biết quy trình gửi Pull Request.
 
+
+
+
+
+## Đóng góp
+
+Mọi đóng góp đều được chào đón, từ sửa lỗi chính tả đến thêm tính năng mới. Dự án phát hành theo giấy phép GPL v3.0, nên mã bạn đóng góp cũng sẽ theo giấy phép này.
+
+### Các cách đóng góp
+
+- **Báo lỗi:** mở một [Issue](../../issues), mô tả lỗi, các bước tái hiện, phiên bản Blender bạn dùng, và đính kèm file CSV gây lỗi nếu có.
+- **Đề xuất tính năng:** mở Issue và mô tả bạn muốn tính năng gì, dùng để làm gì.
+- **Gửi mã nguồn:** sửa lỗi hoặc thêm tính năng rồi gửi Pull Request (xem quy trình bên dưới).
+- **Cải thiện tài liệu:** sửa README, thêm ảnh minh họa, dịch sang ngôn ngữ khác.
+- **Thêm dữ liệu mẫu:** bổ sung file CSV hay vào thư mục `sample_data/`, nhớ ghi nguồn và giấy phép của dữ liệu.
+
+### Quy trình gửi Pull Request
+
+1. **Fork** repo về tài khoản GitHub của bạn.
+
+2. **Clone** bản fork về máy:
+
+   ```
+   git clone https://github.com/TEN_CUA_BAN/Data3D-Blender.git
+   cd Data3D-Blender
+   ```
+
+3. **Tạo branch** riêng cho thay đổi, đặt tên theo việc cần làm:
+
+   ```
+   git checkout -b feature/bieu-do-tron
+   ```
+
+4. **Viết code** và chạy thử trong Blender (xem mục Cài đặt, cách liên kết thư mục giúp sửa code xong chỉ cần khởi động lại Blender).
+
+5. **Commit** với lời nhắn rõ nghĩa:
+
+   ```
+   git add .
+   git commit -m "Thêm biểu đồ tròn"
+   ```
+
+6. **Đẩy branch** lên bản fork:
+
+   ```
+   git push origin feature/bieu-do-tron
+   ```
+
+7. Vào trang repo trên GitHub, bấm **Compare & pull request**, mô tả bạn đã thay đổi gì và vì sao, rồi gửi.
+
+### Quy ước khi viết code
+
+- Viết bằng **Python**, theo cấu trúc hiện có: giao diện trong `panels.py`, thuộc tính trong `properties.py`, xử lý trong `operators.py`.
+- Đặt tên lớp theo quy ước của Blender, ví dụ `DATA3D_OT_...` cho operator, `DATA3D_PT_...` cho panel.
+- Thêm thuộc tính mới thì nhớ xóa nó trong hàm `unregister()`, nếu không tắt add-on rồi bật lại sẽ phát sinh lỗi.
+- Viết chú thích tiếng Việt ngắn gọn cho các đoạn khó hiểu.
+- Thông báo cho người dùng bằng `self.report(...)` thay vì `print`.
+
+### Lời nhắn commit
+
+- Viết bằng tiếng Việt, bắt đầu bằng động từ, ngắn gọn và nêu rõ việc đã làm.
+- Ví dụ tốt: `Thêm biểu đồ tròn`, `Sửa lỗi chia cho 0 khi mọi giá trị bằng nhau`.
+- Ví dụ chưa tốt: `sửa`, `update`, `abc`.
+- Mỗi commit nên chỉ làm một việc.
+
+### Trước khi gửi Pull Request
+
+- Đã thử add-on trong Blender với file `sample_data/sample_chart.csv`.
+- Đã thử với ít nhất một file CSV có lỗi (thiếu cột, có chữ trong cột giá trị) để chắc thông báo lỗi vẫn đúng.
+- Không đưa file tạm hoặc file cá nhân vào commit (`*.blend1`, `*.zip`, ảnh chụp thử).
+- Nếu thay đổi cách dùng, cập nhật README tương ứng.
+
+### Quy tắc ứng xử
+
+Hãy tôn trọng và lịch sự với mọi người tham gia. Góp ý nhằm cải thiện sản phẩm, không nhằm chỉ trích cá nhân.
