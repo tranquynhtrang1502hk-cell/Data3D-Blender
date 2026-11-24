@@ -338,3 +338,118 @@ panels.py ──hiển thị ô nhập──> properties.py
 ```
 
 Cách tách file này theo hướng **tách giao diện, dữ liệu và xử lý** (gần với mô hình MVC) để mỗi file một nhiệm vụ, dễ đọc, dễ sửa và dễ mở rộng. Ví dụ thêm một loại biểu đồ mới chỉ cần thêm hàm dựng trong `operators.py`, một lựa chọn trong `properties.py` và không phải sửa gì ở phần còn lại của giao diện.
+
+
+
+
+## Cách hoạt động
+
+### Luồng xử lý tổng quát
+
+```
+Người dùng bấm "Tạo biểu đồ"
+        │
+        ▼
+1. Kiểm tra đầu vào (đã chọn file chưa?)
+        │
+        ▼
+2. Đọc và kiểm tra file CSV (read_csv)
+        │
+        ▼
+3. Kiểm tra dữ liệu (giá trị âm, số dòng quá nhiều)
+        │
+        ▼
+4. Chuẩn bị cảnh: xóa biểu đồ cũ, tạo Collection "Data3D", nạp font
+        │
+        ▼
+5. Dựng biểu đồ theo loại đã chọn
+   ├── Cột   -> build_bar_chart
+   └── Đường -> build_line_chart
+        │
+        ▼
+6. Thiết lập hoạt họa (nếu bật)
+        │
+        ▼
+7. Zoom khung 3D và chuyển sang chế độ xem màu
+```
+
+### Bước 1: Đọc và kiểm tra CSV (`read_csv`)
+
+| Việc làm | Chi tiết |
+|---|---|
+| Mở file | Đọc bằng mã hóa UTF-8, báo lỗi nếu không mở được hoặc sai mã hóa |
+| Nhận dấu phân cách | Dòng tiêu đề có nhiều `;` hơn `,` thì dùng `;`, ngược lại dùng `,` |
+| Chuẩn hóa tiêu đề | Bỏ khoảng trắng, viết thường, kiểm tra có đủ cột `name` và `value` |
+| Đọc từng dòng | Bỏ dòng trống, đổi dấu phẩy thập phân thành dấu chấm, chuyển `value` thành số |
+| Báo lỗi cụ thể | Chỉ rõ **dòng số mấy** có giá trị không phải số |
+
+Kết quả trả về là danh sách các bộ `(tên, giá trị, emoji)` hoặc một thông báo lỗi.
+
+### Bước 2: Chuẩn bị cảnh
+
+- Chuyển Blender về **Object Mode** nếu đang ở chế độ khác.
+- `clear_chart` xóa các đối tượng cũ **chỉ trong Collection `Data3D`**, đồng thời dọn mesh, curve và vật liệu `D3D_*` không còn dùng. Camera, đèn và đối tượng khác của người dùng **không bị ảnh hưởng**.
+- `get_collection` tạo Collection `Data3D` nếu chưa có.
+
+### Bước 3: Dựng biểu đồ cột (`build_bar_chart`)
+
+Với mỗi dòng dữ liệu thứ `i` có giá trị `value`:
+
+| Thành phần | Cách tính |
+|---|---|
+| Chiều cao | `h = value × tỉ lệ chiều cao` (tối thiểu 0.01 để cột không bị biến mất) |
+| Vị trí ngang | `x = i × khoảng cách` |
+| Khối cột | Khối lập phương cạnh 1 đặt tại `(x, 0, h/2)`, kéo giãn thành `(độ rộng, độ rộng, h)` để đáy cột nằm đúng mặt phẳng |
+| Màu | Chuẩn hóa `t = (value − min) / (max − min)` rồi đổi qua `gradient(t)` |
+| Nhãn tên | Chữ 3D dưới chân cột, tại `(x, −độ rộng, −0.8)` |
+| Nhãn giá trị | Chữ 3D (kèm emoji) trên đỉnh cột, tại `(x, 0, h + 0.3)` |
+
+### Bước 4: Dựng biểu đồ đường (`build_line_chart`)
+
+| Thành phần | Cách làm |
+|---|---|
+| Điểm | Quả cầu nhỏ tại `(i × khoảng cách, 0, value × tỉ lệ)` |
+| Đoạn nối | Khối trụ giữa hai điểm liền kề, quay theo hướng từ điểm này sang điểm kia |
+| Màu | Điểm theo giá trị của nó, đoạn nối theo trung bình hai điểm đầu mút |
+| Nhãn | Giống biểu đồ cột |
+
+### Cách tô màu (`gradient`)
+
+Giá trị `t` từ 0 đến 1 được đổi thành màu RGB:
+
+| Khoảng `t` | Màu |
+|---|---|
+| 0 | Xanh dương |
+| 0.5 | Xanh lá |
+| 1 | Đỏ |
+
+Giữa các mốc, màu được nội suy tuyến tính. Nếu mọi giá trị bằng nhau thì dùng `t = 0.5` (xanh lá) để tránh chia cho 0.
+
+### Hoạt họa
+
+Add-on dùng **keyframe** của Blender:
+
+- Cột `i` bắt đầu ở khung `1 + i × độ trễ`, kết thúc sau `số khung mỗi cột`.
+- **Cột:** chiều cao đi từ gần 0 đến giá trị thật. Vì tâm khối nằm ở giữa nên vị trí `z` cũng được chèn keyframe để cột mọc từ đáy lên.
+- **Nhãn giá trị:** trượt từ dưới lên vị trí cuối.
+- **Biểu đồ đường:** điểm, nhãn và đoạn nối phóng to dần từ gần 0.
+- Khung cuối của cảnh được đặt bằng khung hoạt họa cuối cùng cộng thêm 15 khung.
+
+### Xuất ảnh (`DATA3D_OT_render`)
+
+1. Kiểm tra đã có biểu đồ và đường dẫn hợp lệ.
+2. Nếu cảnh chưa có camera hoặc đèn thì tạo thêm (camera mới và đèn Sun).
+3. Tính **khung bao** quanh toàn bộ đối tượng trong Collection `Data3D`.
+4. Tính khoảng cách camera từ khung bao, góc nhìn của ống kính và tỉ lệ ảnh, nhân thêm hệ số 1.3 làm lề an toàn.
+5. Đặt camera trước biểu đồ, nhìn thẳng vào.
+6. Render và lưu ảnh PNG.
+
+### Cách các file phối hợp
+
+| Thời điểm | File | Việc xảy ra |
+|---|---|---|
+| Bật add-on | `__init__.py` | Gọi `register()` của `properties.py`, `operators.py`, `panels.py` theo thứ tự |
+| Mở thanh bên | `panels.py` | Hàm `draw` vẽ các ô nhập và nút bấm |
+| Chỉnh ô nhập | `properties.py` | Giá trị được lưu vào Scene (lưu cùng file `.blend`) |
+| Bấm nút | `operators.py` | Hàm `execute` đọc các giá trị đã lưu và chạy luồng xử lý ở trên |
+| Tắt add-on | `__init__.py` | Gọi `unregister()` theo thứ tự ngược lại |
