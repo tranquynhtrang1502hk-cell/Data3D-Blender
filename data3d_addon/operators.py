@@ -317,4 +317,24 @@ class DATA3D_OT_create(bpy.types.Operator):
     bl_label = "Tạo biểu đồ"
     bl_options = {'REGISTER', 'UNDO'}
 
-   
+    def execute(self, context):
+        scn = context.scene
+
+        # --- Bước 1: kiểm tra và đọc dữ liệu ---
+        if not scn.data3d_path:
+            self.report({'ERROR'}, "Chưa chọn file CSV")
+            return {'CANCELLED'}
+
+        data, err = read_csv(bpy.path.abspath(scn.data3d_path))
+        if err:
+            self.report({'ERROR'}, err)
+            return {'CANCELLED'}
+
+        if any(v < 0 for _, v, _ in data):
+            self.report({'ERROR'}, "Hiện chưa hỗ trợ giá trị âm")
+            return {'CANCELLED'}
+
+        if len(data) > MAX_ROWS:
+            self.report({'WARNING'}, f"Dữ liệu có {len(data)} dòng, biểu đồ sẽ rất dài")
+
+      
