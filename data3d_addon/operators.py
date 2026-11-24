@@ -213,6 +213,34 @@ def build_bar_chart(scn, data, col, font):
     vmin, vmax = min(values), max(values)
     last_frame = 1
 
+    for i, (name, value, emoji) in enumerate(data):
+        h = max(value * hscale, 0.01)               # Tránh cột cao 0
+        t = (value - vmin) / (vmax - vmin) if vmax > vmin else 0.5
+        x = i * gap
+
+        # Tạo cột: khối vuông cạnh 1, kéo giãn theo (rộng, rộng, cao)
+        bpy.ops.mesh.primitive_cube_add(size=1, location=(x, 0, h / 2))
+        bar = bpy.context.active_object
+        bar.scale = (width, width, h)
+        bar.name = name
+        bar.data.materials.append(make_material("D3D_" + name, gradient(t)))
+        move_to_col(bar, col)
+
+        # Nhãn: tên ở chân cột, giá trị (kèm emoji) trên đỉnh cột
+        value_label = None
+        if scn.data3d_labels:
+            add_label(name, (x, -width, -0.8), 0.45, col, font)
+            text = f"{emoji} {value:g}".strip()
+            value_label = add_label(text, (x, 0, h + 0.3), 0.6, col, font)
+
+        # Hoạt họa: mỗi cột bắt đầu trễ hơn cột trước một chút
+        if scn.data3d_animate:
+            f0 = 1 + i * scn.data3d_stagger
+            f1 = f0 + scn.data3d_duration
+            key_bar_grow(bar, h, f0, f1)
+            if value_label:
+                key_rise(value_label, h + 0.3, f0, f1)
+            last_frame = f1
 
     return last_frame
 
