@@ -12,7 +12,7 @@ Data3D là tiện ích mở rộng (add-on) cho phần mềm đồ họa 3D mã 
 3. [Cài đặt](#cài-đặt)
 4. [Cách sử dụng](#cách-sử-dụng)
 5. [Định dạng file CSV](#định-dạng-file-csv)
-6. [Cấu trúc mã nguồn](#cấu-trúc-mã-nguồn)
+6. [Cấu trúc dự án](#cấu-trúc-dự-án)
 7. [Cách hoạt động](#cách-hoạt-động)
 8. [Hạn chế đã biết](#hạn-chế-đã-biết)
 9. [Hướng phát triển](#hướng-phát-triển)
@@ -278,7 +278,8 @@ Bạn có thể lấy dữ liệu thật từ [World Bank Open Data](https://dat
 
 
 
-## Cấu trúc dự án ( mã nguồn )
+## Cấu trúc dự án
+
 
 ### Sơ đồ thư mục
 
