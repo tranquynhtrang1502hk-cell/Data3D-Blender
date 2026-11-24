@@ -575,3 +575,8 @@ Mọi đóng góp đều được chào đón, từ sửa lỗi chính tả đ�
 ### Quy tắc ứng xử
 
 Hãy tôn trọng và lịch sự với mọi người tham gia. Góp ý nhằm cải thiện sản phẩm, không nhằm chỉ trích cá nhân.
+
+
+## Giấy phép
+ * Phát hành theo GNU General Public License v3.0, xem file LICENSE. Add-on gọi trực tiếp bpy của Blender, mà Blender cũng phát hành theo GPL, nên chọn GPL để đồng bộ giấy phép.
+
