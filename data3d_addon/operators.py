@@ -245,3 +245,45 @@ def build_bar_chart(scn, data, col, font):
     return last_frame
 
 
+def build_line_chart(scn, data, col, font):
+    """Dựng biểu đồ đường: quả cầu tại mỗi điểm, nối bằng khối trụ."""
+    gap = scn.data3d_spacing
+    hscale = scn.data3d_height
+    r = scn.data3d_width * 0.25                     
+    values = [d[1] for d in data]
+    vmin, vmax = min(values), max(values)
+    last_frame = 1
+
+    points = []  
+    ts = []    
+    f_ends = []   
+
+    for i, (name, value, emoji) in enumerate(data):
+        h = value * hscale
+        t = (value - vmin) / (vmax - vmin) if vmax > vmin else 0.5
+        p = Vector((i * gap, 0, h))
+        points.append(p)
+        ts.append(t)
+
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=r, location=p)
+        dot = bpy.context.active_object
+        dot.name = name
+        dot.data.materials.append(make_material("D3D_" + name, gradient(t)))
+        move_to_col(dot, col)
+
+        value_label = None
+        if scn.data3d_labels:
+            add_label(name, (p.x, -r, -0.8), 0.45, col, font)
+            text = f"{emoji} {value:g}".strip()
+            value_label = add_label(text, (p.x, 0, h + r + 0.4), 0.6, col, font)
+
+        f0 = 1 + i * scn.data3d_stagger
+        f1 = f0 + scn.data3d_duration
+        f_ends.append(f1)
+        if scn.data3d_animate:
+            key_pop(dot, f0, f1)
+            if value_label:
+                key_pop(value_label, f0, f1)
+            last_frame = f1
+
+    
