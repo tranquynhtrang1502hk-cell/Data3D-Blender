@@ -178,3 +178,99 @@ Bấm **Xóa biểu đồ** để dọn sạch biểu đồ do Data3D tạo ra. 
 | Hiện chưa hỗ trợ giá trị âm | Có số âm trong dữ liệu | Bỏ hoặc đổi các giá trị âm |
 | Hãy lưu file .blend trước | Xuất ảnh với đường dẫn `//` khi chưa lưu | Lưu file .blend hoặc nhập đường dẫn đầy đủ |
 | Chữ hiện thành ô vuông | Font mặc định thiếu ký tự | Chọn font ở ô **Font** (ví dụ Noto Sans) |
+
+
+
+
+
+## Định dạng file CSV
+
+### Cấu trúc cơ bản
+
+Dòng đầu tiên là **tiêu đề**, các dòng sau là dữ liệu. Mỗi dòng dữ liệu tương ứng với một cột (hoặc một điểm) trên biểu đồ.
+
+```
+name,value,emoji
+Hà Nội,5,
+TP.HCM,8,
+Đà Nẵng,3,
+Cần Thơ,4,
+Huế,6,
+```
+
+### Các cột
+
+| Cột | Bắt buộc | Ý nghĩa | Ví dụ |
+|---|---|---|---|
+| `name` | Có | Tên hiển thị của cột hoặc điểm | `Hà Nội` |
+| `value` | Có | Giá trị số, quyết định chiều cao và màu | `5`, `3.5` |
+| `emoji` | Không | Biểu tượng đi kèm giá trị | `🏙️` |
+
+- Tên cột **không phân biệt chữ hoa, chữ thường** và được bỏ khoảng trắng thừa (`Name`, ` VALUE ` vẫn đọc được).
+- Các cột khác ngoài ba cột trên sẽ bị bỏ qua.
+- Thứ tự cột không quan trọng, miễn có `name` và `value`.
+
+### Quy tắc dữ liệu
+
+| Quy tắc | Chi tiết |
+|---|---|
+| Mã hóa | Lưu bằng **UTF-8** để tiếng Việt có dấu hiển thị đúng |
+| Dấu phân cách | Dấu phẩy `,` hoặc dấu chấm phẩy `;` (tự nhận biết theo dòng tiêu đề) |
+| Số thập phân | Nên dùng dấu chấm: `3.5`. Nếu file dùng `;` làm dấu phân cách thì có thể dùng dấu phẩy `3,5` |
+| Giá trị âm | **Chưa hỗ trợ**, add-on sẽ báo lỗi |
+| Dòng trống | Được bỏ qua |
+| Thiếu tên | Add-on tự đặt tên theo số thứ tự (`Muc 1`, `Muc 2`...) |
+| Số dòng | Nên dưới **50 dòng**, quá nhiều thì biểu đồ rất dài và add-on sẽ cảnh báo |
+
+### Ví dụ đúng
+
+Dùng dấu phẩy:
+
+```
+name,value
+Hà Nội,5
+TP.HCM,8.5
+Đà Nẵng,3
+```
+
+Dùng dấu chấm phẩy (kiểu Excel tiếng Việt):
+
+```
+name;value
+Hà Nội;5
+TP.HCM;8,5
+Đà Nẵng;3
+```
+
+### Ví dụ sai
+
+| File | Lỗi | Kết quả |
+|---|---|---|
+| `ten,gia_tri` | Sai tên cột tiêu đề | Báo thiếu cột `name` và `value` |
+| `Hà Nội,năm` | Giá trị là chữ | Báo dòng đó không phải số |
+| `Hà Nội,-5` | Giá trị âm | Báo chưa hỗ trợ giá trị âm |
+| File lưu mã hóa ANSI | Sai mã hóa | Báo file không phải UTF-8 |
+
+### Cách lưu file CSV bằng UTF-8
+
+**Notepad:**
+
+1. Chọn **File > Save As**.
+
+2. Ở ô **Encoding** phía dưới, chọn **UTF-8**.
+
+3. Đặt tên có đuôi `.csv` và chọn **Save as type: All files**.
+
+**Excel:**
+
+1. Chọn **File > Save As**.
+
+2. Ở ô loại file, chọn **CSV UTF-8 (Comma delimited)**.
+
+### Về emoji và tiếng Việt
+
+Font mặc định của Blender có thể không hiển thị emoji hoặc một số chữ có dấu. Khi gặp ô vuông, hãy chọn một font mã nguồn mở phù hợp (ví dụ Noto Sans, Noto Emoji) ở ô **Font** trong panel Data3D. Một ô Font chỉ nhận một font, nên nếu cần chữ Việt đúng thì ưu tiên Noto Sans và để trống cột `emoji`. Hãy kiểm tra giấy phép của font trước khi dùng.
+
+### Nguồn dữ liệu mở
+
+Bạn có thể lấy dữ liệu thật từ [World Bank Open Data](https://data.worldbank.org/) hoặc [Our World in Data](https://ourworldindata.org/), rút gọn còn vài chục dòng và đổi tên cột thành `name`, `value`. Nhớ ghi nguồn khi sử dụng.
