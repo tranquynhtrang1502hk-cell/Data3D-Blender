@@ -1,0 +1,9 @@
+name,value
+Việt Nam,74.59
+Thái Lan,76.41
+Nhật Bản,84.04
+Myanmar,66.89
+Trung Quốc,77.95
+Ấn Độ,72.00
+Indonesia,71.15
+Hàn Quốc,83.43
