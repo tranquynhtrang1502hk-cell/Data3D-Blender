@@ -273,4 +273,21 @@ Font mặc định của Blender có thể không hiển thị emoji hoặc mộ
 
 ### Nguồn dữ liệu mở
 
-Bạn có thể lấy dữ liệu thật từ [World Bank Open Data](https://data.worldbank.org/) hoặc [Our World in Data](https://ourworldindata.org/), rút gọn còn vài chục dòng và đổi tên cột thành `name`, `value`. Nhớ ghi nguồn khi sử dụng.
+Bạn có thể lấy dữ liệu thật từ [World Bank Open Data](https://data.worldbank.org/) hoặc [Our World in Data](https://ourworldindata.org/), rút gọn còn vài chục dòng và đổi tên cột thành `name`, `value`. 
+
+
+
+
+## Cấu trúc dự án ( mã nguồn )
+
+Data3D-Blender/
+├── .gitignore
+├── LICENSE                 # GNU GPL v3.0
+├── README.md
+├── data3d_addon/
+│   ├── __init__.py         # bl_info, đăng ký / hủy đăng ký các module
+│   ├── properties.py       # các thuộc tính người dùng chỉnh (đường dẫn, kích thước, hoạt họa...)
+│   ├── operators.py        # đọc CSV, dựng biểu đồ, hoạt họa, xuất ảnh
+│   └── panels.py           # giao diện bảng Data3D ở thanh bên
+└── sample_data/
+    └── sample_chart.csv    # dữ liệu mẫu để chạy thử
