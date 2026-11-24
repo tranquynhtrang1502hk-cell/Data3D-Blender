@@ -376,3 +376,69 @@ class DATA3D_OT_clear(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class DATA3D_OT_render(bpy.types.Operator):
+    """Đặt camera nhìn vào biểu đồ và xuất ảnh"""
+    bl_idname = "data3d.render_image"
+    bl_label = "Xuất ảnh"
+
+    def execute(self, context):
+        scn = context.scene
+        col = bpy.data.collections.get(COL_NAME)
+        if col is None or len(col.objects) == 0:
+            self.report({'ERROR'}, "Chưa có biểu đồ, hãy bấm Tạo biểu đồ trước")
+            return {'CANCELLED'}
+
+        # Đường dẫn "//" cần file .blend đã được lưu
+        if scn.data3d_out_path.startswith("//") and not bpy.data.filepath:
+            self.report({'ERROR'}, "Hãy lưu file .blend trước, hoặc nhập đường dẫn đầy đủ")
+            return {'CANCELLED'}
+
+        # Đảm bảo có camera và đèn
+        if scn.camera is None:
+            cam_data = bpy.data.cameras.new("Data3D_Camera")
+            cam = bpy.data.objects.new("Data3D_Camera", cam_data)
+            scn.collection.objects.link(cam)
+            scn.camera = cam
+        cam = scn.camera
+
+        if not any(o.type == 'LIGHT' for o in scn.objects):
+            sun_data = bpy.data.lights.new("Data3D_Sun", 'SUN')
+            sun = bpy.data.objects.new("Data3D_Sun", sun_data)
+            scn.collection.objects.link(sun)
+            sun.location = (0, -10, 10)
+            sun.rotation_euler = (math.radians(50), 0, math.radians(15))
+
+        # Tính khung bao quanh toàn bộ biểu đồ
+        context.view_layer.update()
+        xs, ys, zs = [], [], []
+        for obj in col.objects:
+            for corner in obj.bound_box:
+                w = obj.matrix_world @ Vector(corner)
+                xs.append(w.x); ys.append(w.y); zs.append(w.z)
+        width = max(xs) - min(xs)
+        height = max(zs) - min(zs)
+        cx = (min(xs) + max(xs)) / 2
+        cz = (min(zs) + max(zs)) / 2
+
+        # Tính khoảng cách camera để thấy đủ biểu đồ
+        cam.data.lens = 35
+        tan_h = (cam.data.sensor_width / 2) / cam.data.lens
+        aspect = scn.render.resolution_x / scn.render.resolution_y
+        tan_v = tan_h / aspect
+        dist = max((width / 2) / tan_h, (height / 2) / tan_v) * 1.3 + 2
+        # Hệ số 1.3 là lề an toàn, tăng lên nếu biểu đồ bị cắt
+
+        cam.location = (cx, min(ys) - dist, cz)
+        cam.rotation_euler = (math.radians(90), 0, 0)
+        cam.data.clip_end = max(1000, dist * 4)
+
+        # Xuất ảnh
+        scn.render.filepath = bpy.path.abspath(scn.data3d_out_path)
+        scn.render.image_settings.file_format = 'PNG'
+        bpy.ops.render.render(write_still=True)
+        self.report({'INFO'}, f"Đã lưu ảnh: {scn.render.filepath}")
+        return {'FINISHED'}
+
+
+classes = (DATA3D_OT_create, DATA3D_OT_clear, DATA3D_OT_render)
+
