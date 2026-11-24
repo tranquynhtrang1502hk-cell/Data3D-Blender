@@ -280,14 +280,60 @@ Bạn có thể lấy dữ liệu thật từ [World Bank Open Data](https://dat
 
 ## Cấu trúc dự án ( mã nguồn )
 
+### Sơ đồ thư mục
+
+```
 Data3D-Blender/
-├── .gitignore
-├── LICENSE                 # GNU GPL v3.0
-├── README.md
-├── data3d_addon/
-│   ├── __init__.py         # bl_info, đăng ký / hủy đăng ký các module
-│   ├── properties.py       # các thuộc tính người dùng chỉnh (đường dẫn, kích thước, hoạt họa...)
-│   ├── operators.py        # đọc CSV, dựng biểu đồ, hoạt họa, xuất ảnh
-│   └── panels.py           # giao diện bảng Data3D ở thanh bên
-└── sample_data/
-    └── sample_chart.csv    # dữ liệu mẫu để chạy thử
+├── .gitignore              # Danh sách file Git bỏ qua (*.blend1, *.blend2...)
+├── LICENSE                 # Giấy phép GNU GPL v3.0
+├── README.md               # Tài liệu giới thiệu và hướng dẫn
+├── data3d_addon/           # Mã nguồn chính của add-on
+│   ├── __init__.py         # Thông tin add-on, đăng ký / hủy đăng ký các module
+│   ├── properties.py       # Các thuộc tính người dùng chỉnh
+│   ├── operators.py        # Logic xử lý: đọc CSV, dựng biểu đồ, xuất ảnh
+│   └── panels.py           # Giao diện bảng Data3D
+├── sample_data/            # Dữ liệu mẫu để chạy thử
+│   └── sample_chart.csv
+└── docs/                   # Ảnh minh họa cho README (tạo khi cần)
+```
+
+### Vai trò từng file
+
+| File | Vai trò | Nội dung chính |
+|---|---|---|
+| `__init__.py` | **Đăng ký** add-on với Blender | `bl_info` (tên, tác giả, phiên bản), hàm `register()` và `unregister()` |
+| `properties.py` | **Lưu** lựa chọn của người dùng | Đường dẫn CSV, loại biểu đồ, kích thước, nhãn, font, hoạt họa, đường dẫn ảnh xuất |
+| `operators.py` | **Xử lý** khi người dùng bấm nút | Đọc CSV, dựng biểu đồ, tạo màu, nhãn, hoạt họa, xuất ảnh |
+| `panels.py` | **Hiển thị** giao diện | Bảng Data3D ở thanh bên (phím N) với các ô nhập và nút bấm |
+| `sample_chart.csv` | Dữ liệu mẫu | 5 thành phố với giá trị minh họa |
+
+### Các thành phần trong `operators.py`
+
+| Nhóm | Tên | Chức năng |
+|---|---|---|
+| **Operator** (nút bấm) | `DATA3D_OT_create` | Đọc CSV và dựng biểu đồ |
+| | `DATA3D_OT_clear` | Xóa biểu đồ cũ |
+| | `DATA3D_OT_render` | Đặt camera và xuất ảnh PNG |
+| **Đọc dữ liệu** | `read_csv` | Đọc và kiểm tra file CSV, trả về dữ liệu hoặc thông báo lỗi |
+| **Dựng biểu đồ** | `build_bar_chart` | Dựng biểu đồ cột |
+| | `build_line_chart` | Dựng biểu đồ đường |
+| **Hình thức** | `gradient` | Đổi giá trị thành màu |
+| | `make_material` | Tạo vật liệu có màu |
+| | `add_label` | Tạo chữ 3D |
+| | `load_font` | Nạp font người dùng chọn |
+| **Hoạt họa** | `key_bar_grow`, `key_rise`, `key_pop` | Chèn keyframe cho cột, nhãn, điểm |
+| **Quản lý cảnh** | `get_collection`, `clear_chart`, `move_to_col` | Quản lý Collection `Data3D` |
+| | `frame_view` | Zoom khung 3D và bật chế độ xem màu |
+
+### Mối quan hệ giữa các file
+
+```
+__init__.py ──đăng ký──> properties.py   (lưu lựa chọn)
+            ──đăng ký──> operators.py    (xử lý khi bấm nút)
+            ──đăng ký──> panels.py       (vẽ giao diện)
+
+panels.py ──hiển thị ô nhập──> properties.py
+          ──gắn nút bấm──────> operators.py
+```
+
+Cách tách file này theo hướng **tách giao diện, dữ liệu và xử lý** (gần với mô hình MVC) để mỗi file một nhiệm vụ, dễ đọc, dễ sửa và dễ mở rộng. Ví dụ thêm một loại biểu đồ mới chỉ cần thêm hàm dựng trong `operators.py`, một lựa chọn trong `properties.py` và không phải sửa gì ở phần còn lại của giao diện.
