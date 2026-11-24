@@ -79,3 +79,27 @@ def move_to_col(obj, col):
         c.objects.unlink(obj)
     col.objects.link(obj)
 
+
+def load_font(path):
+    """Nạp font từ file. Trả về None nếu không có hoặc lỗi."""
+    if not path:
+        return None
+    try:
+        return bpy.data.fonts.load(bpy.path.abspath(path), check_existing=True)
+    except Exception:
+        return None
+
+
+def add_label(text, location, size, col, font=None):
+    """Tạo chữ 3D dựng đứng, canh giữa. Trả về đối tượng chữ."""
+    bpy.ops.object.text_add(location=location)
+    t = bpy.context.active_object
+    t.data.body = text
+    t.data.size = size
+    t.data.align_x = 'CENTER'
+    if font:
+        t.data.font = font
+    t.rotation_euler = (math.radians(90), 0, 0)  # Quay đứng, hướng về camera
+    move_to_col(t, col)
+    return t
+
