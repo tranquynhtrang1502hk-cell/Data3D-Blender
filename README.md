@@ -39,10 +39,15 @@ Data3D là tiện ích mở rộng (add-on) cho phần mềm đồ họa 3D mã 
 | | Giao diện bằng chuột | Thanh bên Blender (phím N), không cần viết code |
 
 
+
+
 ## Yêu cầu 
 
 * Blender (phát triển và thử trên bản 5.3.0). Khai báo tối thiểu trong bl_info là 4.2.
 * Không cần cài thêm thư viện Python, add-on chỉ dùng bpy và thư viện chuẩn có sẵn trong Blender.
+
+
+
 
 
 ## Cài đặt
@@ -97,3 +102,79 @@ Cách này giúp Blender đọc thẳng code trong repo, sửa code xong chỉ c
 ### Gỡ cài đặt
 
 Vào **Edit > Preferences > Add-ons**, tìm **Data3D** rồi tắt hoặc gỡ bỏ.
+
+
+
+
+## Cách sử dụng
+
+### Bước 1: Mở bảng Data3D
+
+1. Mở Blender, đưa chuột vào **khung 3D**.
+
+2. Nhấn phím **N** để mở thanh bên.
+
+3. Bấm vào tab **Data3D**.
+
+### Bước 2: Chọn dữ liệu
+
+1. Ở mục **Dữ liệu**, bấm biểu tượng thư mục cạnh ô **File CSV**.
+
+2. Chọn file dữ liệu của bạn, hoặc dùng file mẫu `sample_data/sample_chart.csv`.
+
+3. Chọn **Loại** biểu đồ: **Cột** hoặc **Đường**.
+
+### Bước 3: Tùy chỉnh (không bắt buộc)
+
+| Mục | Tùy chọn | Tác dụng |
+|---|---|---|
+| **Kích thước** | Khoảng cách | Khoảng cách giữa các cột hoặc điểm |
+| | Độ rộng | Độ rộng cột (hoặc kích thước điểm) |
+| | Tỉ lệ chiều cao | Nhân chiều cao với một hệ số |
+| **Nhãn** | Hiện nhãn | Bật/tắt tên và giá trị trên biểu đồ |
+| | Font | Chọn file font để hiện đúng tiếng Việt hoặc emoji |
+| **Hoạt họa** | Hoạt họa | Cột mọc lên lần lượt |
+| | Số khung mỗi cột | Thời gian một cột mọc lên |
+| | Trễ giữa các cột | Khoảng chờ giữa hai cột liên tiếp |
+
+### Bước 4: Tạo biểu đồ
+
+1. Bấm nút **Tạo biểu đồ**.
+
+2. Biểu đồ xuất hiện trong khung 3D. Nếu chưa thấy rõ, đưa chuột vào khung 3D và nhấn phím **Home** để xem toàn cảnh.
+
+3. Nếu cột vẫn màu xám, nhấn phím **Z** trong khung 3D rồi chọn **Material Preview**.
+
+4. Muốn đổi dữ liệu hoặc cài đặt, chỉnh lại rồi bấm **Tạo biểu đồ** lần nữa. Biểu đồ cũ sẽ được thay thế.
+
+### Bước 5: Xem hoạt họa (nếu đã bật)
+
+1. Nhấn **Space** trong khung 3D để phát hoạt họa.
+
+2. Nhấn **Space** lần nữa để dừng.
+
+### Bước 6: Xuất ảnh
+
+1. **Lưu file .blend trước** (**File > Save**), hoặc nhập đường dẫn đầy đủ vào ô **Ảnh xuất**, ví dụ `C:\Users\ten\Desktop\chart.png`.
+
+2. Bấm nút **Xuất ảnh**.
+
+3. Add-on tự đặt camera nhìn vào biểu đồ và lưu ảnh PNG.
+
+> Nút **Xuất ảnh** sẽ di chuyển camera của cảnh. Nếu bạn đã đặt camera riêng, hãy lưu lại trước khi bấm.
+
+### Xóa biểu đồ
+
+Bấm **Xóa biểu đồ** để dọn sạch biểu đồ do Data3D tạo ra. Camera, đèn và các đối tượng khác không bị ảnh hưởng.
+
+### Xử lý lỗi thường gặp
+
+| Thông báo hoặc hiện tượng | Nguyên nhân | Cách xử lý |
+|---|---|---|
+| Chưa chọn file CSV | Ô File CSV đang trống | Chọn file CSV |
+| File CSV cần có cột `name` và `value` | Dòng tiêu đề sai | Sửa dòng đầu thành `name,value` |
+| `'...'` không phải là số | Cột `value` có chữ | Chỉ để số, dùng dấu chấm cho số thập phân |
+| File không phải UTF-8 | Lưu sai mã hóa | Lưu lại file CSV với mã hóa UTF-8 |
+| Hiện chưa hỗ trợ giá trị âm | Có số âm trong dữ liệu | Bỏ hoặc đổi các giá trị âm |
+| Hãy lưu file .blend trước | Xuất ảnh với đường dẫn `//` khi chưa lưu | Lưu file .blend hoặc nhập đường dẫn đầy đủ |
+| Chữ hiện thành ô vuông | Font mặc định thiếu ký tự | Chọn font ở ô **Font** (ví dụ Noto Sans) |
