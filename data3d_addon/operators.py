@@ -337,4 +337,29 @@ class DATA3D_OT_create(bpy.types.Operator):
         if len(data) > MAX_ROWS:
             self.report({'WARNING'}, f"Dữ liệu có {len(data)} dòng, biểu đồ sẽ rất dài")
 
-      
+        # --- Bước 2: chuẩn bị cảnh ---
+        # Thêm đối tượng cần đang ở Object Mode
+        if context.object and context.object.mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+        clear_chart()
+        col = get_collection(scn)
+        font = load_font(scn.data3d_font)
+
+        # --- Bước 3: dựng biểu đồ theo loại đã chọn ---
+        if scn.data3d_type == 'LINE':
+            last_frame = build_line_chart(scn, data, col, font)
+        else:
+            last_frame = build_bar_chart(scn, data, col, font)
+
+        # --- Bước 4: thiết lập thời gian hoạt họa ---
+        if scn.data3d_animate:
+            scn.frame_start = 1
+            scn.frame_end = last_frame + 15
+            scn.frame_set(1)
+
+        bpy.ops.object.select_all(action='DESELECT')
+        frame_view(context)
+        self.report({'INFO'}, f"Đã tạo biểu đồ từ {len(data)} dòng dữ liệu")
+        return {'FINISHED'}
+
