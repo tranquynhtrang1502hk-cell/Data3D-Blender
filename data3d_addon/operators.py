@@ -249,14 +249,14 @@ def build_line_chart(scn, data, col, font):
     """Dựng biểu đồ đường: quả cầu tại mỗi điểm, nối bằng khối trụ."""
     gap = scn.data3d_spacing
     hscale = scn.data3d_height
-    r = scn.data3d_width * 0.25                     
+    r = scn.data3d_width * 0.25                     # Bán kính điểm
     values = [d[1] for d in data]
     vmin, vmax = min(values), max(values)
     last_frame = 1
 
-    points = []  
-    ts = []    
-    f_ends = []   
+    points = []   # Vị trí các điểm
+    ts = []       # Giá trị màu t của từng điểm
+    f_ends = []   # Khung hình mỗi điểm xuất hiện xong
 
     for i, (name, value, emoji) in enumerate(data):
         h = value * hscale
@@ -286,4 +286,22 @@ def build_line_chart(scn, data, col, font):
                 key_pop(value_label, f0, f1)
             last_frame = f1
 
-    
+    # Nối hai điểm liền kề bằng một khối trụ
+    for i in range(len(points) - 1):
+        p1, p2 = points[i], points[i + 1]
+        v = p2 - p1
+        bpy.ops.mesh.primitive_cylinder_add(
+            radius=r * 0.5, depth=v.length, location=(p1 + p2) / 2)
+        seg = bpy.context.active_object
+        seg.name = f"Doan_{i + 1}"
+        # Quay trục Z của khối trụ theo hướng từ p1 đến p2
+        seg.rotation_mode = 'QUATERNION'
+        seg.rotation_quaternion = v.to_track_quat('Z', 'Y')
+        color = gradient((ts[i] + ts[i + 1]) / 2)
+        seg.data.materials.append(make_material(f"D3D_doan_{i + 1}", color))
+        move_to_col(seg, col)
+        if scn.data3d_animate:
+            f1 = f_ends[i + 1]
+            key_pop(seg, f1 - scn.data3d_duration, f1)
+
+    return last_frame
