@@ -1,3 +1,7 @@
+
+# pylint: disable=import-error,no-member,invalid-name
+
+
 """
 Data3D - Add-on Blender vẽ biểu đồ 3D từ file CSV.
 File này là "cửa vào" của add-on: khai báo thông tin (bl_info)
