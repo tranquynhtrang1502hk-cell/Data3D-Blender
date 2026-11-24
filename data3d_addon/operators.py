@@ -200,9 +200,9 @@ def key_pop(obj, f0, f1):
 
 
 
-# =====================================================================
+
 # 2. HÀM DỰNG BIỂU ĐỒ
-# =====================================================================
+
 
 def build_bar_chart(scn, data, col, font):
     """Dựng biểu đồ cột. Trả về khung hình cuối của hoạt họa."""
@@ -305,3 +305,16 @@ def build_line_chart(scn, data, col, font):
             key_pop(seg, f1 - scn.data3d_duration, f1)
 
     return last_frame
+
+
+# =====================================================================
+# 3. CÁC OPERATOR (NÚT BẤM)
+# =====================================================================
+
+class DATA3D_OT_create(bpy.types.Operator):
+    """Đọc file CSV và dựng biểu đồ 3D"""
+    bl_idname = "data3d.create_chart"
+    bl_label = "Tạo biểu đồ"
+    bl_options = {'REGISTER', 'UNDO'}
+
+   
