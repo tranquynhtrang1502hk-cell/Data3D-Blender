@@ -149,3 +149,22 @@ def read_csv(path):
         return None, "File không có dòng dữ liệu nào"
     return data, None
 
+
+def frame_view(context):
+    """Zoom khung 3D để thấy toàn biểu đồ và bật chế độ xem màu."""
+    try:
+        for window in context.window_manager.windows:
+            for area in window.screen.areas:
+                if area.type != 'VIEW_3D':
+                    continue
+                for space in area.spaces:
+                    if space.type == 'VIEW_3D':
+                        space.shading.type = 'MATERIAL'
+                region = next((r for r in area.regions if r.type == 'WINDOW'), None)
+                if region:
+                    with context.temp_override(window=window, area=area, region=region):
+                        bpy.ops.view3d.view_all()
+    except Exception:
+        pass  # Zoom không được cũng không sao, người dùng bấm Home
+
+
