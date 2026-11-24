@@ -295,7 +295,7 @@ Data3D-Blender/
 │   └── panels.py           # Giao diện bảng Data3D
 ├── sample_data/            # Dữ liệu mẫu để chạy thử
 │   └── sample_chart.csv
-└── docs/                   # Ảnh minh họa cho README (tạo khi cần)
+└── docs/                   # file dữ liệu có sẵn cho demo tuổi thọ trung bình của các nước
 ```
 
 ### Vai trò từng file
